@@ -22,7 +22,7 @@ class UserManager(BaseUserManager):
   def create_superuser(self, name, email, password):
     """Create a new superuser"""
     user = self.create_user(name, email, password)
-    user.is_superuser = True,
+    user.is_superuser = True
     user.is_staff = True
     user.save(using=self._db)
 
@@ -36,7 +36,7 @@ class User(AbstractBaseUser, PermissionsMixin):
   is_active = models.BooleanField(default=True)
   is_staff = models.BooleanField(default=False)
 
-  # UserManager tells Django how to interact with our custom user model in order to create a user
+  # UserManager tells Django how to interact with our custom user model
   objects = UserManager()
 
   USERNAME_FIELD = 'email' # Override the default username field which is required by default to email
@@ -44,13 +44,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
   # methods to interact with our custom user model
   def get_full_name(self):
-    """Retriever user full name"""
+    """Retrieve user full name"""
     return self.name
 
   def get_short_name(self):
-    """Retrieve short name of user"""
+    """Retrieve user short name"""
     return self.name
 
   def __str__(self):
-    """Return string representation of a user"""
+    """Return string representation of users"""
     return self.email
