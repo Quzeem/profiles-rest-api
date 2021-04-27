@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.filters import SearchFilter
 
 from . import serializers
 from .models import User
@@ -101,3 +102,6 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (UpdateOwnProfile,)
+    filter_backends = (SearchFilter,)
+    # Allows us to search for objects by name or email field
+    search_fields = ('name', 'email',)
