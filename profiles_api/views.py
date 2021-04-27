@@ -4,6 +4,8 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.filters import SearchFilter
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
 
 from . import serializers
 from .models import User
@@ -105,3 +107,8 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (SearchFilter,)
     # Allows us to search for objects by name or email field
     search_fields = ('name', 'email',)
+
+
+class UserLoginApiView(ObtainAuthToken):
+    """Handle creation of user authentication tokens"""
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
