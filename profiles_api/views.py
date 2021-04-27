@@ -1,9 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.viewsets import ViewSet
+from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 
 from . import serializers
+from .models import User
+from .permissions import UpdateOwnProfile
 
 
 class HelloApiView(APIView):
@@ -45,7 +48,8 @@ class HelloApiView(APIView):
         return Response({'method': 'DELETE'})
 
 
-class HelloViewSet(ViewSet):
+# We need to define the action implementations explicitly - ViewSet does not provide any implementations of actions(list, retrieve...)
+class HelloViewSet(viewsets.ViewSet):
     """ViewSet Demo"""
 
     serializer_class = serializers.HelloSerializer
@@ -85,3 +89,15 @@ class HelloViewSet(ViewSet):
     def destroy(self, request, pk=None):
         """Delete an object"""
         return Response({'method': 'DELETE'})
+
+
+# Includes implementations for various actions by default. As with ModelViewSet, we'll need to provide at least the queryset and serializer_class attributes
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides 'list', 'retrieve', 'create', 'update', 'partial_update', and 'destroy' actions
+    """
+    # queryset represent a collection of objects from our database. It can have zero, one or many filters.
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (UpdateOwnProfile,)
