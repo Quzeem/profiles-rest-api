@@ -6,10 +6,11 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.filters import SearchFilter
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.permissions import IsAuthenticated
 
 from . import serializers
-from .models import User
-from .permissions import UpdateOwnProfile
+from .models import User, UserProfileFeed
+from .permissions import UpdateOwnProfile, UpdateOwnFeed
 
 
 class HelloApiView(APIView):
@@ -112,3 +113,18 @@ class UserViewSet(viewsets.ModelViewSet):
 class UserLoginApiView(ObtainAuthToken):
     """Handle creation of user authentication tokens"""
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+
+class UserProfileFeedViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides 'list', 'retrieve', 'create', 'update', 'partial_update', and 'destroy' actions
+    """
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = serializers.UserProfileFeedSerializer
+    queryset = UserProfileFeed.objects.all()
+    permission_classes = (UpdateOwnFeed, IsAuthenticated,)
+
+    # Allows us to customize the behaviour for creating objects through ModelViewSet
+    def perform_create(self, serializer):
+        """Sets the 'user' field to the logged in user"""
+        serializer.save(user=self.request.user)

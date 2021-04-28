@@ -8,6 +8,7 @@ router = DefaultRouter()
 # We only need to specify the base_name if we are creating a viewset that doesn't have a queryset or if we want to override the name of the queryset assosciated to it
 router.register('hello-viewset', views.HelloViewSet, base_name='hello-viewset')
 router.register('profiles', views.UserViewSet)
+router.register('feeds', views.UserProfileFeedViewSet)
 
 urlpatterns = [
     path('hello-view', views.HelloApiView.as_view()),  # APIView
